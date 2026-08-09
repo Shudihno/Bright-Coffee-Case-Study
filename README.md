@@ -1,410 +1,467 @@
-# ☕ Bright Coffee Shop --- Sales Analysis
+☕ Bright Coffee Shop — Sales Analysis
 
-```{=html}
-<p align="center">
-```
-`<strong>`{=html}End-to-End Data Analytics
-Project`</strong>`{=html}`<br>`{=html} Turning transaction data into
-actionable business insights
-```{=html}
-</p>
-```
-```{=html}
-<p align="center">
-```
-`<img src="https://img.shields.io/badge/SQL-Databricks-orange?style=flat-square" alt="SQL">`{=html}
-`<img src="https://img.shields.io/badge/Power%20BI-Dashboard-yellow?style=flat-square" alt="Power BI">`{=html}
-`<img src="https://img.shields.io/badge/Excel-Analysis-green?style=flat-square" alt="Excel">`{=html}
-`<img src="https://img.shields.io/badge/Miro-Planning-blue?style=flat-square" alt="Miro">`{=html}
-```{=html}
-</p>
-```
+End-to-End Data Analytics ProjectTurning transaction data into actionable business insights.
 
-------------------------------------------------------------------------
+📌 Project at a Glance
 
-## 👋 Project at a Glance
+Bright Coffee Shop Sales Analysis is an end-to-end data analytics case study completed as part of the BrightLearn Junior Data Analyst programme.
 
-**Bright Coffee Shop Sales Analysis** is an end-to-end data analytics
-case study completed as part of the BrightLearn Junior Data Analyst
-programme.
+The project demonstrates how raw transaction data can be:
 
-The project demonstrates how I transformed raw coffee shop transaction
-data into a cleaned analytical dataset, analysed it using SQL, built
-business-focused visualisations, and translated the findings into
-recommendations for management.
+Prepared → Transformed → Analysed → Visualised → Communicated → Turned into Business Recommendations
 
-### The business question
+🎯 Business Question
 
-> **How can Bright Coffee Shop use its sales data to understand revenue,
-> product performance and customer purchasing patterns, and identify
-> opportunities to improve sales?**
+How can Bright Coffee Shop use its sales data to understand revenue, product performance and customer purchasing patterns, and identify opportunities to improve sales?
 
-------------------------------------------------------------------------
+💼 Skills Demonstrated
 
-## 💼 What This Project Demonstrates
+Skill
 
-  -----------------------------------------------------------------------
-  Skill                               What I Did
-  ----------------------------------- -----------------------------------
-  **SQL**                             Cleaned, transformed, calculated
-                                      and aggregated transactional data
+Application in the Project
 
-  **Databricks**                      Loaded and processed the dataset
-                                      using SQL
+SQL
 
-  **Data Cleaning**                   Standardised dates, times, prices
-                                      and categorical fields
+Data cleaning, transformation, aggregation and analysis
 
-  **Data Transformation**             Created analytical fields for
-                                      revenue, month, weekday/weekend and
-                                      time periods
+Databricks
 
-  **Excel**                           Built PivotTables and supporting
-                                      analysis
+Data loading and SQL-based data processing
 
-  **Power BI**                        Created executive-focused KPIs,
-                                      charts and a heatmap
+Data Cleaning
 
-  **Business Analysis**               Converted data patterns into
-                                      business insights
+Standardised dates, times, prices and categorical fields
 
-  **Data Storytelling**               Presented findings and
-                                      recommendations to a CEO audience
+Data Transformation
 
-  **Miro**                            Planned the project and documented
-                                      the data/analysis workflow
-  -----------------------------------------------------------------------
+Created revenue, month, weekday/weekend and time-period fields
 
-------------------------------------------------------------------------
+Excel
 
-## 🎯 Business Objectives
+PivotTables and supporting analysis
+
+Power BI
+
+Executive dashboard and data visualisation
+
+Business Analysis
+
+Converted data patterns into business insights
+
+Data Storytelling
+
+Presented findings and recommendations for a CEO audience
+
+Miro
+
+Project planning and data-flow design
+
+GitHub
+
+Portfolio documentation and version control
+
+🎯 Business Objectives
 
 The analysis was designed to answer five key questions:
 
-1.  **What is the total revenue?**
-2.  **Which products generate the most revenue?**
-3.  **Which products sell the most units?**
-4.  **When does the business perform best?**
-5.  **What actions could improve sales performance?**
+What is the total revenue?
 
-------------------------------------------------------------------------
+Which products generate the most revenue?
 
-## 🔄 My Analytics Workflow
+Which products sell the most units?
 
-``` text
+When does the business perform best?
+
+What actions could improve sales performance?
+
+🔄 Project Workflow
+
 Raw Transaction Data
-        │
-        ▼
+        ↓
 Data Preparation
-        │
-        ▼
+        ↓
 Databricks + SQL
-        │
-        ├── Data Cleaning
-        ├── Date/Time Transformation
-        ├── Revenue Calculation
-        └── Business Grouping
-        │
-        ▼
+        ↓
+Data Cleaning & Transformation
+        ↓
 Clean Analytical Dataset
-        │
-        ├───────────────┐
-        ▼               ▼
-      Excel          Power BI
-   PivotTables       Dashboard
-        │               │
-        └───────┬───────┘
-                ▼
-        Business Insights
-                │
-                ▼
-        Recommendations
-```
+        ↓
+Excel + Power BI
+        ↓
+Business Analysis
+        ↓
+Insights & Recommendations
+        ↓
+Executive Presentation
 
-------------------------------------------------------------------------
+🗃️ Dataset
 
-## 🗃️ Dataset
+The project uses the Bright Coffee Shop Sales transactional dataset.
 
-The dataset contains coffee shop transaction-level information.
+Main Fields
 
-### Main fields
+Field
 
--   `transaction_id`
--   `transaction_date`
--   `transaction_time`
--   `transaction_qty`
--   `store_id`
--   `store_location`
--   `product_id`
--   `unit_price`
--   `product_category`
--   `product_type`
--   `product_detail`
+Description
 
-------------------------------------------------------------------------
+transaction_id
 
-## 🧹 Data Transformation
+Unique transaction identifier
 
-Data preparation was performed in **Databricks using SQL**.
+transaction_date
 
-### Revenue
+Date of the transaction
 
-Created a calculated revenue field:
+transaction_time
 
-``` text
-total_amount = unit_price × transaction_qty
-```
+Time of the transaction
 
-`unit_price` was cast to a decimal data type to ensure accurate
-calculations.
+transaction_qty
 
-### Date Analysis
+Quantity purchased
 
-Created:
+store_id
 
--   Purchase date
--   Month ID
--   Year
--   Month number
--   Month name
--   Day of month
--   Day of week
--   Day name
--   Weekday / Weekend classification
+Store identifier
 
-### Time Analysis
+store_location
+
+Store location
+
+product_id
+
+Product identifier
+
+unit_price
+
+Price per unit
+
+product_category
+
+Product category
+
+product_type
+
+Product type
+
+product_detail
+
+Detailed product name
+
+🧹 Data Preparation & Transformation
+
+Data preparation was performed using SQL in Databricks.
+
+💰 Revenue Calculation
+
+A calculated revenue field was created:
+
+total_amount = unit_price * transaction_qty
+
+unit_price was converted to a decimal data type to ensure accurate calculations.
+
+📅 Date Transformation
+
+The following analytical fields were created:
+
+Purchase date
+
+Month ID
+
+Year
+
+Month number
+
+Month name
+
+Day of month
+
+Day of week
+
+Day name
+
+Weekday / Weekend classification
+
+🕒 Time Transformation
 
 Transactions were grouped into three-hour business periods:
 
-  Time           Period
-  -------------- ----------------
-  06:00--08:59   Breakfast Rush
-  09:00--11:59   Morning
-  12:00--14:59   Lunch
-  15:00--17:59   Afternoon
-  18:00--20:59   Evening
+Time Bucket
 
-This made it possible to compare revenue and transaction activity across
-the trading day.
+Period
 
-### Data Quality
+06:00–08:59
 
-Blank or missing categorical values were standardised to improve
-consistency in analysis and reporting.
+Breakfast Rush
 
-------------------------------------------------------------------------
+09:00–11:59
 
-## 📊 Analysis Performed
+Morning
 
-### Revenue Analysis
+12:00–14:59
 
--   Total revenue
--   Monthly revenue trends
--   Revenue by product category
--   Revenue by product type
--   Revenue by product detail
+Lunch
 
-### Product Analysis
+15:00–17:59
 
--   Top 10 products by revenue
--   Best-selling product by quantity
--   Product category performance
--   Product-level comparisons
+Afternoon
 
-### Time Analysis
+18:00–20:59
 
--   Revenue by time bucket
--   Revenue by day period
--   Weekday vs weekend performance
--   Day × time-period performance
+Evening
 
-------------------------------------------------------------------------
+This makes it easier to identify when the business performs best throughout the trading day.
 
-## 📈 Power BI Dashboard
+🧽 Data Quality
 
-The Power BI dashboard was designed around the questions a business
-decision-maker would ask.
+Missing or blank categorical values were standardised to improve consistency.
 
-### Key visuals
+Examples include:
 
-**Revenue KPI** - Provides a quick view of overall revenue.
+Unknown store location
 
-**Monthly Revenue Trend** - Shows how revenue changes from January to
-June.
+Unknown category
 
-**Top 10 Product Details** - Identifies the products generating the
-highest revenue.
+Unknown product
 
-**Best-Selling Product** - Identifies the product with the highest
-quantity sold.
+Unknown product detail
 
-**Product Category Performance** - Compares revenue across categories.
+🧠 SQL Analysis
 
-**Time-of-Day Analysis** - Identifies stronger and weaker trading
-periods.
+SQL was used to transform, aggregate and analyse the transaction data.
 
-**Day × Time Heatmap** - Combines day of week and time period to
-highlight high-performing trading windows.
+Analysis Areas
 
-------------------------------------------------------------------------
+Revenue by product category
 
-## 💡 Business Insights
+Revenue by product type
 
-The analysis is designed to move beyond simply reporting numbers.
+Revenue by product detail
 
-It helps management understand:
+Quantity sold by product
 
-### Product
+Monthly revenue trends
 
-Which products deserve continued stock and attention?
+Revenue by time bucket
 
-### Revenue
+Revenue by day period
 
-How is revenue changing over time?
+Weekday vs weekend performance
 
-### Timing
+Day × time-period performance
 
-When should the business ensure sufficient stock and operational
-capacity?
+📊 Excel Analysis
 
-### Opportunity
+The processed dataset was exported to Excel for additional analysis.
 
-Which weaker periods or products could be targeted with promotions?
+Excel was used for:
 
-> **Note:** Final numerical findings are presented in the accompanying
-> Power BI dashboard and executive presentation rather than duplicated
-> here.
+PivotTables
 
-------------------------------------------------------------------------
+Revenue summaries
 
-## 🚀 Recommendations
+Product performance analysis
 
-The analysis supports several practical actions:
+Time-period analysis
 
-### 01 --- Protect Best Sellers
+Supporting charts
 
-Monitor inventory levels for high-performing products and ensure
-availability during periods of high demand.
+📈 Power BI Dashboard
 
-### 02 --- Maximise Peak Periods
+The Power BI dashboard was designed around the questions a business decision-maker would ask.
 
-Align staffing, stock and operational capacity with stronger trading
-periods.
+Key Visuals
 
-### 03 --- Target Slow Periods
+Visual
 
-Use promotions, bundles or campaigns during weaker periods to encourage
-additional purchases.
+Business Purpose
 
-### 04 --- Review Underperforming Products
+Revenue KPI
 
-Use product-level performance to identify products that may benefit from
-improved positioning, bundling or promotion.
+Provides a quick view of overall revenue
 
-### 05 --- Improve Reporting
+Monthly Revenue Trend
 
-Automate recurring sales reporting so management can monitor performance
-more efficiently.
+Tracks revenue from January to June
 
-------------------------------------------------------------------------
+Top 10 Product Details
 
-## 📁 Project Deliverables
+Identifies the products generating the most revenue
 
-  -----------------------------------------------------------------------
-  Deliverable                         Purpose
-  ----------------------------------- -----------------------------------
-  🗺️ **Miro Board**                   Project planning and data-flow
-                                      design
+Best-Selling Product
 
-  💻 **SQL Scripts**                  Data cleaning, transformation and
-                                      analysis
+Identifies the product with the highest quantity sold
 
-  📊 **Excel Workbook**               PivotTables and supporting analysis
+Product Category Analysis
 
-  📈 **Power BI Dashboard**           Interactive business visualisation
+Compares category performance
 
-  🖥️ **PowerPoint Presentation**      Executive-level findings and
-                                      recommendations
+Time-of-Day Analysis
 
-  📖 **README**                       Project documentation
-  -----------------------------------------------------------------------
+Identifies stronger and weaker trading periods
 
-------------------------------------------------------------------------
+Day × Time Heatmap
 
-## 🛠️ Technology Stack
+Highlights high-performing trading windows
 
-``` text
+🔎 Business Analysis
+
+The project focuses on turning raw numbers into management-level questions.
+
+Product Performance
+
+Which products generate the most revenue?
+
+Which products sell the most units?
+
+Note: A product with the highest quantity sold is not necessarily the product with the highest revenue.
+
+Revenue Performance
+
+How does revenue change from month to month?
+
+Are there periods of growth or decline that management should investigate?
+
+Time Performance
+
+Which period of the day performs best?
+
+The analysis compares:
+
+Breakfast Rush → Morning → Lunch → Afternoon → Evening
+
+Day & Time Performance
+
+The heatmap combines:
+
+Day of week
+
+Period of day
+
+Revenue
+
+This helps identify high-performing trading windows.
+
+💡 Business Recommendations
+
+1. 📦 Protect Best-Selling Products
+
+Monitor inventory levels for high-performing products and ensure sufficient availability during periods of high demand.
+
+2. ⏰ Maximise Peak Trading Periods
+
+Align staffing, stock and operational capacity with stronger trading periods.
+
+3. 📣 Target Slow Periods
+
+Use promotions, bundles or targeted campaigns during weaker periods to encourage additional purchases.
+
+4. 🎯 Review Underperforming Products
+
+Use product-level performance to identify products that may benefit from improved positioning, bundling or promotion.
+
+5. ⚙️ Improve Sales Reporting
+
+Automate recurring reporting so management can monitor revenue, product performance and time-period trends more efficiently.
+
+📁 Project Deliverables
+
+Deliverable
+
+Purpose
+
+Miro Board
+
+Project planning and data-flow design
+
+SQL Scripts
+
+Data cleaning, transformation and analysis
+
+Excel Workbook
+
+PivotTables and supporting analysis
+
+Power BI Dashboard
+
+Interactive business visualisation
+
+PowerPoint Presentation
+
+Executive-level findings and recommendations
+
+README
+
+Project documentation
+
+🛠️ Technology Stack
+
 SQL
- └── Databricks
-       │
-       ├── Data Cleaning
-       ├── Transformation
-       └── Analysis
 
-Excel
- └── PivotTables + Supporting Analysis
+Databricks
+
+Microsoft Excel
 
 Power BI
- └── Dashboard + Visualisation
 
 Miro
- └── Planning + Data Flow
 
 GitHub
- └── Version Control + Portfolio
-```
 
-------------------------------------------------------------------------
-
-## 📌 Business Value
+📌 Business Value
 
 This project demonstrates the complete journey from:
 
-**Raw Data → Clean Data → Analysis → Visualisation → Insight → Action**
+Raw Data → Clean Data → Analysis → Visualisation → Insight → Action
 
-The outcome is a set of business-focused insights that can support
-decisions around:
+The analysis can support decisions around:
 
--   Revenue growth
--   Product performance
--   Inventory planning
--   Marketing campaigns
--   Peak-period operations
--   Sales monitoring
+Revenue growth
 
-------------------------------------------------------------------------
+Product performance
 
-## 🔮 Future Improvements
+Inventory planning
+
+Marketing campaigns
+
+Peak-period operations
+
+Sales monitoring
+
+🚀 Future Enhancements
 
 With additional data, the analysis could be extended to include:
 
--   Automated dashboard refreshes
--   Store-level performance comparisons
--   Customer-level analysis
--   Product profitability using cost data
--   Promotion effectiveness
--   Revenue forecasting
--   Demand forecasting
--   Predictive analytics
+Automated dashboard refreshes
 
-------------------------------------------------------------------------
+Store-level performance comparisons
 
-## 👤 About the Analyst
+Customer-level analysis
 
-**Mashudu Sivhada**\
+Product profitability using cost data
+
+Promotion effectiveness
+
+Revenue forecasting
+
+Demand forecasting
+
+Predictive analytics
+
+👤 About the Analyst
+
+Mashudu Sivhada
+
 Junior Data Analyst
 
-### Core tools demonstrated in this project
+Tools Demonstrated
 
-`SQL` · `Databricks` · `Excel` · `Power BI` · `Miro` · `GitHub`
+SQL · Databricks · Excel · Power BI · Miro · GitHub
 
-------------------------------------------------------------------------
+⭐ Project Summary
 
-## ⭐ Why This Project Matters
+This project demonstrates an end-to-end analytical approach:
 
-This project demonstrates more than the ability to create charts.
+Understand the business problem → Prepare the data → Analyse the data → Communicate the insight → Recommend an action
 
-It demonstrates an end-to-end analytical process:
-
-> **Understand the business problem → Prepare the data → Analyse the
-> data → Communicate the insight → Recommend an action**
+The goal was not simply to create charts, but to use data to help Bright Coffee Shop make better business decisions.
