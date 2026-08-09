@@ -2,119 +2,96 @@
 
 <p align="center">
 
-**From raw transactions to business insights**
+### Turning Coffee Shop Transactions into Business Insights
 
-An end-to-end data analytics project exploring revenue, product performance, and customer purchasing patterns at Bright Coffee Shop.
-
-</p>
-
-<p align="center">
-
-![SQL](https://img.shields.io/badge/SQL-Databricks-orange?style=for-the-badge&logo=databricks&logoColor=white)
-![Excel](https://img.shields.io/badge/Excel-Analysis-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white)
-![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-F2C811?style=for-the-badge&logo=powerbi&logoColor=black)
-![Miro](https://img.shields.io/badge/Miro-Planning-050038?style=for-the-badge&logo=miro&logoColor=white)
-![GitHub](https://img.shields.io/badge/GitHub-Portfolio-181717?style=for-the-badge&logo=github&logoColor=white)
+An end-to-end data analytics project exploring revenue, product performance, customer activity and sales trends.
 
 </p>
 
 ---
 
-## 📸 Project Preview
+## 🚀 Explore the Project
 
-> Add your actual dashboard screenshots to the `images` folder in this repository and update the filenames below.
+### ☕ Coffee CEO View
 
-### Power BI Dashboard
+**Interactive executive dashboard**
 
-<p align="center">
+👉 https://coffee-ceo-view.lovable.app
 
-<img src="images/powerbi-dashboard.png" alt="Bright Coffee Power BI Dashboard" width="900">
-
-</p>
-
-### Excel Analysis
-
-<p align="center">
-
-<img src="images/excel-analysis.png" alt="Bright Coffee Excel Analysis" width="900">
-
-</p>
+A simplified business-facing dashboard designed to turn the analysis into an easy-to-understand view for decision-makers.
 
 ---
 
-# 📊 Project Overview
+## 📊 Project Snapshot
 
-**Bright Coffee Shop Sales Analysis** is an end-to-end data analytics project completed as part of the BrightLearn Junior Data Analyst programme.
-
-The project takes transactional coffee shop data and transforms it into meaningful information that can help answer questions such as:
-
-- 💰 How much revenue is being generated?
-- ☕ Which products perform best?
-- 🛒 Which products sell the most?
-- 🕒 What time of day performs best?
-- 📅 How does performance change over time?
-- 🔥 Which day and time combinations show the strongest performance?
-- 💡 What actions could improve sales?
-
-The goal was to move beyond simply displaying numbers and instead create a **business-focused analytical story**.
+| Area | What I Did |
+|---|---|
+| 🧹 Data Preparation | Cleaned and transformed transactional data |
+| 🧠 SQL | Performed calculations, grouping and analysis |
+| 🗄️ Databricks | Processed the dataset using SQL |
+| 📊 Data Studio | Built interactive sales visualisations |
+| 📈 Power BI | Created business-focused dashboards |
+| 📗 Excel | Performed PivotTable analysis |
+| 📅 Canva | Designed the project Gantt chart |
+| 🗺️ Miro | Planned the data flow and analytical approach |
+| 💡 Business Analysis | Converted findings into recommendations |
+| 🎨 Data Storytelling | Presented complex information visually |
 
 ---
 
-# 🎯 Business Problem
+# 🎯 The Business Question
 
-Bright Coffee Shop's newly appointed CEO wants to understand the company's sales performance and identify opportunities to increase revenue.
+Bright Coffee Shop has a new CEO whose objective is to **grow revenue and improve product performance**.
 
-The analysis therefore focuses on three major areas:
+The analysis focuses on answering:
+
+> **Which products generate the most revenue, when does the business perform best, and what opportunities exist to improve sales?**
+
+---
+
+# 🔍 Questions I Wanted to Answer
 
 ### 💰 Revenue
+**How much revenue is the business generating?**
 
-Understanding how revenue changes over time and across products.
+### ☕ Products
+**Which products are driving revenue and sales volume?**
 
-### ☕ Product Performance
+### 🕒 Time
+**Which part of the day performs best?**
 
-Identifying the products and categories contributing most to sales.
+### 📅 Trends
+**How does revenue change from month to month?**
 
-### 🕒 Customer Activity
-
-Understanding when transactions occur and which periods of the trading day perform best.
-
----
-
-# 🔎 Key Questions
-
-| Question | Analysis |
-|---|---|
-| 💰 What is the total revenue? | Revenue calculation |
-| 📈 How does revenue change over time? | Monthly trend analysis |
-| ☕ Which products generate the most revenue? | Product revenue ranking |
-| 🛒 Which products sell the most units? | Quantity analysis |
-| 🕒 Which part of the day performs best? | Time-period analysis |
-| 📅 Are weekdays or weekends stronger? | Day classification |
-| 🔥 Which day/time combinations perform best? | Heatmap analysis |
+### 🔥 Opportunities
+**Where are the strongest and weakest trading periods?**
 
 ---
 
-# 🧭 Project Journey
+# 🧭 Analytics Workflow
 
-```mermaid
-flowchart LR
-
-A[Raw Transaction Data] --> B[Data Preparation]
-
-B --> C[Databricks]
-
-C --> D[SQL Cleaning & Transformation]
-
-D --> E[Clean Analytical Dataset]
-
-E --> F[Excel Analysis]
-
-E --> G[Power BI Dashboard]
-
-F --> H[Business Insights]
-
-G --> H
-
-H --> I[Recommendations]
-
-I --> J[Executive Presentation]
+```text
+              RAW TRANSACTION DATA
+                       │
+                       ▼
+                DATA PREPARATION
+                       │
+                       ▼
+                DATABRICKS + SQL
+                       │
+                       ▼
+             CLEAN ANALYTICAL DATA
+                       │
+            ┌──────────┼──────────┐
+            ▼          ▼          ▼
+         EXCEL     DATA STUDIO  POWER BI
+            │          │          │
+            └──────────┼──────────┘
+                       ▼
+                BUSINESS ANALYSIS
+                       │
+                       ▼
+               COFFEE CEO VIEW
+                       │
+                       ▼
+              INSIGHTS & ACTIONS
