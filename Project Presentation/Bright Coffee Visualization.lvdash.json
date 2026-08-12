@@ -1,0 +1,1705 @@
+{
+  "datasets": [
+    {
+      "name": "3c631162",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `bright_coffee`;\n",
+        "\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "WITH cleaned_data AS (\n",
+        "  SELECT\n",
+        "    transaction_id,\n",
+        "    store_id,\n",
+        "    product_id,\n",
+        "    TO_DATE(transaction_date) AS purchase_date,\n",
+        "    TO_CHAR(transaction_date, 'yyyyMM') AS month_id,\n",
+        "    YEAR(transaction_date) AS year,\n",
+        "    MONTH(transaction_date) AS month_number,\n",
+        "    MONTHNAME(transaction_date) AS month_name,\n",
+        "    DAY(transaction_date) AS day_of_month,\n",
+        "    DAYOFWEEK(transaction_date) AS day_of_week,\n",
+        "    DAYNAME(transaction_date) AS day_name,\n",
+        "    CASE\n",
+        "      WHEN DAYNAME(transaction_date) IN ('Sat', 'Sun') THEN 'Weekend'\n",
+        "      ELSE 'Weekday'\n",
+        "    END AS day_classification,\n",
+        "    DATE_FORMAT(transaction_time, 'HH:mm:ss') AS purchase_time,\n",
+        "    transaction_qty,\n",
+        "    CAST(unit_price AS DECIMAL(10, 2)) AS unit_price,\n",
+        "    CAST(transaction_qty * unit_price AS DECIMAL(10, 2)) AS total_amount,\n",
+        "    CASE\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '06:00:00' AND '08:59:59'\n",
+        "      THEN\n",
+        "        '06:00-08:59'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '09:00:00' AND '11:59:59'\n",
+        "      THEN\n",
+        "        '09:00-11:59'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '12:00:00' AND '14:59:59'\n",
+        "      THEN\n",
+        "        '12:00-14:59'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '15:00:00' AND '17:59:59'\n",
+        "      THEN\n",
+        "        '15:00-17:59'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '18:00:00' AND '20:59:59'\n",
+        "      THEN\n",
+        "        '18:00-20:59'\n",
+        "      ELSE 'Other'\n",
+        "    END AS transaction_time_bucket,\n",
+        "    CASE\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '06:00:00' AND '08:59:59'\n",
+        "      THEN\n",
+        "        'Breakfast Rush'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '09:00:00' AND '11:59:59'\n",
+        "      THEN\n",
+        "        'Morning'\n",
+        "      WHEN DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '12:00:00' AND '14:59:59' THEN 'Lunch'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '15:00:00' AND '17:59:59'\n",
+        "      THEN\n",
+        "        'Afternoon'\n",
+        "      WHEN\n",
+        "        DATE_FORMAT(transaction_time, 'HH:mm:ss') BETWEEN '18:00:00' AND '20:59:59'\n",
+        "      THEN\n",
+        "        'Evening'\n",
+        "      ELSE 'Other'\n",
+        "    END AS day_period,\n",
+        "    CASE\n",
+        "      WHEN\n",
+        "        store_location IS NULL\n",
+        "        OR TRIM(store_location) = ''\n",
+        "      THEN\n",
+        "        'Unknown'\n",
+        "      ELSE store_location\n",
+        "    END AS store_location,\n",
+        "    CASE\n",
+        "      WHEN\n",
+        "        product_category IS NULL\n",
+        "        OR TRIM(product_category) = ''\n",
+        "      THEN\n",
+        "        'Unknown Category'\n",
+        "      ELSE product_category\n",
+        "    END AS product_category,\n",
+        "    CASE\n",
+        "      WHEN\n",
+        "        product_type IS NULL\n",
+        "        OR TRIM(product_type) = ''\n",
+        "      THEN\n",
+        "        'Unknown Product'\n",
+        "      ELSE product_type\n",
+        "    END AS product_type,\n",
+        "    CASE\n",
+        "      WHEN\n",
+        "        product_detail IS NULL\n",
+        "        OR TRIM(product_detail) = ''\n",
+        "      THEN\n",
+        "        'Unknown Detail'\n",
+        "      ELSE product_detail\n",
+        "    END AS product_detail\n",
+        "  FROM\n",
+        "    bright_coffee\n",
+        ")\n",
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  cleaned_data"
+      ]
+    },
+    {
+      "name": "e3a9437f",
+      "displayName": "Untitled dataset",
+      "queryLines": [
+        "USE CATALOG `bright_coffee`;\n",
+        "USE SCHEMA `default`;\n",
+        "\n",
+        "-- ============================================================================\n",
+        "-- CTE: CLEANED_DATA\n",
+        "-- Purpose:\n",
+        "-- Prepare and clean the raw Bright Coffee sales data for analysis and reporting.\n",
+        "-- This includes:\n",
+        "--   - Date dimension extraction\n",
+        "--   - Time dimension extraction\n",
+        "--   - Revenue calculations\n",
+        "--   - Time bucket classification\n",
+        "--   - Handling missing values\n",
+        "-- ============================================================================\n",
+        "\n",
+        "WITH cleaned_data AS\n",
+        "(\n",
+        "    SELECT\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Primary Keys\n",
+        "        ------------------------------------------------------------------------\n",
+        "        transaction_id,\n",
+        "        store_id,\n",
+        "        product_id,\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Date Transformations\n",
+        "        ------------------------------------------------------------------------\n",
+        "\n",
+        "        -- Convert timestamp to date only\n",
+        "        TO_DATE(transaction_date) AS purchase_date,\n",
+        "\n",
+        "        -- Create Month ID for trend analysis (e.g., 202401)\n",
+        "        TO_CHAR(transaction_date,'yyyyMM') AS month_id,\n",
+        "\n",
+        "        -- Extract calendar year\n",
+        "        YEAR(transaction_date) AS year,\n",
+        "\n",
+        "        -- Extract month number (1-12)\n",
+        "        MONTH(transaction_date) AS month_number,\n",
+        "\n",
+        "        -- Extract month name\n",
+        "        MONTHNAME(transaction_date) AS month_name,\n",
+        "\n",
+        "        -- Extract day of month\n",
+        "        DAY(transaction_date) AS day_of_month,\n",
+        "\n",
+        "        -- Extract numeric weekday\n",
+        "        DAYOFWEEK(transaction_date) AS day_of_week,\n",
+        "\n",
+        "        -- Extract weekday name\n",
+        "        DAYNAME(transaction_date) AS day_name,\n",
+        "\n",
+        "        -- Classify weekdays and weekends\n",
+        "        CASE\n",
+        "            WHEN day_name IN ('Sat','Sun')\n",
+        "                THEN 'Weekend'\n",
+        "            ELSE 'Weekday'\n",
+        "        END AS day_classification,\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Time Transformations\n",
+        "        ------------------------------------------------------------------------\n",
+        "\n",
+        "        -- Extract only the time portion\n",
+        "        DATE_FORMAT(transaction_time,'HH:mm:ss') AS purchase_time,\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Sales Metrics\n",
+        "        ------------------------------------------------------------------------\n",
+        "\n",
+        "        -- Number of items purchased\n",
+        "        transaction_qty,\n",
+        "\n",
+        "        -- Standardise selling price\n",
+        "        CAST(unit_price AS DECIMAL(10,2)) AS unit_price,\n",
+        "\n",
+        "        -- Calculate transaction revenue\n",
+        "        CAST(transaction_qty * unit_price AS DECIMAL(10,2)) AS total_amount,\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Time Bucket (3-hour intervals)\n",
+        "        -- Used for trend analysis and line charts\n",
+        "        ------------------------------------------------------------------------\n",
+        "\n",
+        "        CASE\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '06:00:00' AND '08:59:59'\n",
+        "                THEN '06:00-08:59'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '09:00:00' AND '11:59:59'\n",
+        "                THEN '09:00-11:59'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '12:00:00' AND '14:59:59'\n",
+        "                THEN '12:00-14:59'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '15:00:00' AND '17:59:59'\n",
+        "                THEN '15:00-17:59'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '18:00:00' AND '20:59:59'\n",
+        "                THEN '18:00-20:59'\n",
+        "\n",
+        "            ELSE 'Other'\n",
+        "        END AS transaction_time_bucket,\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Business Day Period\n",
+        "        -- Executive-friendly labels for dashboards\n",
+        "        ------------------------------------------------------------------------\n",
+        "\n",
+        "        CASE\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '06:00:00' AND '08:59:59'\n",
+        "                THEN 'Breakfast Rush'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '09:00:00' AND '11:59:59'\n",
+        "                THEN 'Morning'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '12:00:00' AND '14:59:59'\n",
+        "                THEN 'Lunch'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '15:00:00' AND '17:59:59'\n",
+        "                THEN 'Afternoon'\n",
+        "\n",
+        "            WHEN DATE_FORMAT(transaction_time,'HH:mm:ss') BETWEEN '18:00:00' AND '20:59:59'\n",
+        "                THEN 'Evening'\n",
+        "\n",
+        "            ELSE 'Other'\n",
+        "        END AS day_period,\n",
+        "\n",
+        "        ------------------------------------------------------------------------\n",
+        "        -- Data Cleaning\n",
+        "        ------------------------------------------------------------------------\n",
+        "\n",
+        "        -- Replace missing store locations\n",
+        "        CASE\n",
+        "            WHEN store_location IS NULL\n",
+        "                 OR TRIM(store_location) = ''\n",
+        "                THEN 'Unknown'\n",
+        "            ELSE store_location\n",
+        "        END AS store_location,\n",
+        "\n",
+        "        -- Replace missing product categories\n",
+        "        CASE\n",
+        "            WHEN product_category IS NULL\n",
+        "                 OR TRIM(product_category) = ''\n",
+        "                THEN 'Unknown Category'\n",
+        "            ELSE product_category\n",
+        "        END AS product_category,\n",
+        "\n",
+        "        -- Replace missing product types\n",
+        "        CASE\n",
+        "            WHEN product_type IS NULL\n",
+        "                 OR TRIM(product_type) = ''\n",
+        "                THEN 'Unknown Product'\n",
+        "            ELSE product_type\n",
+        "        END AS product_type,\n",
+        "\n",
+        "        -- Replace missing product details\n",
+        "        CASE\n",
+        "            WHEN product_detail IS NULL\n",
+        "                 OR TRIM(product_detail) = ''\n",
+        "                THEN 'Unknown Detail'\n",
+        "            ELSE product_detail\n",
+        "        END AS product_detail\n",
+        "\n",
+        "    FROM bright_coffee\n",
+        ")\n",
+        "\n",
+        "-- Final cleaned dataset\n",
+        "SELECT *\n",
+        "FROM cleaned_data;\n"
+      ],
+      "columns": [
+        {
+          "displayName": "month_label",
+          "expression": "CONCAT(CAST(`month_number` AS STRING), '. ', LEFT(`month_name`, 3))"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "ebb678d4",
+      "displayName": "Bright Coffee Analysis",
+      "layout": [
+        {
+          "widget": {
+            "name": "2e76d2a0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    },
+                    {
+                      "name": "product_detail",
+                      "expression": "`product_detail`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "showTitle": true,
+                "title": "Visualization 3"
+              },
+              "version": 3,
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "product_detail",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "c736f2ce",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "product_category",
+                      "expression": "`product_category`"
+                    },
+                    {
+                      "name": "sum(transaction_qty)",
+                      "expression": "SUM(`transaction_qty`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Quantity Sold by Category"
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(transaction_qty)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 9,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "bad97b92",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    },
+                    {
+                      "name": "product_type",
+                      "expression": "`product_type`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Top 8 Product Types by Revenue",
+                "showTitle": true
+              },
+              "version": 3,
+              "mark": {
+                "layout": "stack"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "product_type",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 15,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "234088e0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    },
+                    {
+                      "name": "day_period",
+                      "expression": "`day_period`"
+                    },
+                    {
+                      "name": "day_name",
+                      "expression": "`day_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "mark": {
+                "layout": "layer"
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue Heatmap"
+              },
+              "widgetType": "heatmap",
+              "encodings": {
+                "x": {
+                  "fieldName": "day_period",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "day_name",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "color": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "087dbe19",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "transaction_time_bucket",
+                      "expression": "`transaction_time_bucket`"
+                    },
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue by Time Bucket"
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "transaction_time_bucket",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 21,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "8ecd102d",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "transaction_time_bucket",
+                      "expression": "`transaction_time_bucket`"
+                    },
+                    {
+                      "name": "count(total_amount)",
+                      "expression": "COUNT(`total_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Orders Throughout the Day"
+              },
+              "mark": {
+                "layout": "layer"
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "transaction_time_bucket",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "count(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "fededd4d",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    },
+                    {
+                      "name": "store_location",
+                      "expression": "`store_location`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue by Store Location"
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "store_location",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 27,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "52479795",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "product_detail",
+                      "expression": "`product_detail`"
+                    },
+                    {
+                      "name": "product_type",
+                      "expression": "`product_type`"
+                    },
+                    {
+                      "name": "transaction_qty",
+                      "expression": "`transaction_qty`"
+                    },
+                    {
+                      "name": "total_amount",
+                      "expression": "`total_amount`"
+                    },
+                    {
+                      "name": "unit_price",
+                      "expression": "`unit_price`"
+                    },
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    },
+                    {
+                      "name": "avg(unit_price)",
+                      "expression": "AVG(`unit_price`)"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "product_detail",
+                          "product_type",
+                          "transaction_qty",
+                          "total_amount",
+                          "unit_price"
+                        ]
+                      },
+                      {}
+                    ]
+                  },
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`product_detail`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`product_type`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`transaction_qty`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`total_amount`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`unit_price`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 4,
+              "frame": {
+                "showTitle": true,
+                "title": "Top Products"
+              },
+              "widgetType": "pivot",
+              "encodings": {
+                "rows": {
+                  "fields": [
+                    {
+                      "fieldName": "product_detail",
+                      "scale": {
+                        "type": "categorical",
+                        "sort": {
+                          "by": "natural-order"
+                        }
+                      }
+                    },
+                    {
+                      "fieldName": "product_type",
+                      "scale": {
+                        "type": "categorical",
+                        "sort": {
+                          "by": "natural-order"
+                        }
+                      }
+                    },
+                    {
+                      "fieldName": "transaction_qty",
+                      "scale": {
+                        "type": "categorical",
+                        "sort": {
+                          "by": "natural-order"
+                        }
+                      }
+                    },
+                    {
+                      "fieldName": "total_amount",
+                      "scale": {
+                        "type": "categorical",
+                        "sort": {
+                          "by": "natural-order"
+                        }
+                      }
+                    },
+                    {
+                      "fieldName": "unit_price",
+                      "scale": {
+                        "type": "categorical"
+                      }
+                    }
+                  ]
+                },
+                "cells": {
+                  "fields": [
+                    {
+                      "fieldName": "sum(total_amount)",
+                      "cellType": "text"
+                    },
+                    {
+                      "fieldName": "avg(unit_price)",
+                      "cellType": "text"
+                    }
+                  ],
+                  "displayAs": "rows"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 27,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "98426fc0",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "e3a9437f",
+                  "fields": [
+                    {
+                      "name": "month_label",
+                      "expression": "`month_label`"
+                    },
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    }
+                  ],
+                  "filters": [
+                    {
+                      "expression": "`month_number` IN (1, 2, 3, 4, 5, 6)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "frame": {
+                "title": "Revenue by Month (Jan-Jun)",
+                "showTitle": true
+              },
+              "version": 3,
+              "mark": {
+                "layout": "layer"
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "month_label",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 8,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "9b5333e2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Revenue",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(total_amount)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "85c6333e",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "count(transaction_qty)",
+                      "expression": "COUNT(`transaction_qty`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Orders",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "count(transaction_qty)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "quantity",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(transaction_qty)",
+                      "expression": "SUM(`transaction_qty`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Quantity Sold"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(transaction_qty)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "avg",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "avg(total_amount)",
+                      "expression": "AVG(`total_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "AVG Order Value"
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(total_amount)"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "top_category",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    },
+                    {
+                      "name": "product_detail",
+                      "expression": "`product_detail`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Best Selling Product",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "product_detail",
+                  "rowNumber": 16
+                },
+                "target": {
+                  "fieldName": "sum(total_amount)",
+                  "change": {
+                    "type": "numeric"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "peak_time_text",
+            "multilineTextboxSpec": {
+              "lines": [
+                "#### Highest Revenue Period\n",
+                "\n",
+                "<span style=\"font-size: 24px;\">09:00-11:59</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 1,
+            "width": 2,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "5cec49f2",
+            "queries": [
+              {
+                "name": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_month_name",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "month_name",
+                      "expression": "`month_name`"
+                    },
+                    {
+                      "name": "month_name_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "month_name",
+                    "queryName": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_month_name"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "0973a463",
+            "queries": [
+              {
+                "name": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_store_location",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "store_location",
+                      "expression": "`store_location`"
+                    },
+                    {
+                      "name": "store_location_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "store_location",
+                    "queryName": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_store_location"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "aee1de31",
+            "queries": [
+              {
+                "name": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_product_category",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "product_category",
+                      "expression": "`product_category`"
+                    },
+                    {
+                      "name": "product_category_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "product_category",
+                    "queryName": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_product_category"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "cb9f70ed",
+            "queries": [
+              {
+                "name": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_product_type",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "product_type",
+                      "expression": "`product_type`"
+                    },
+                    {
+                      "name": "product_type_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "product_type",
+                    "queryName": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_product_type"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "2d7576d8",
+            "queries": [
+              {
+                "name": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_product_detail",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "product_detail",
+                      "expression": "`product_detail`"
+                    },
+                    {
+                      "name": "product_detail_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "product_detail",
+                    "queryName": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_product_detail"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "64c93834",
+            "queries": [
+              {
+                "name": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_day_classification",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "day_classification",
+                      "expression": "`day_classification`"
+                    },
+                    {
+                      "name": "day_classification_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true
+              },
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "day_classification",
+                    "queryName": "dashboards/01f1917bda501c4893bca05061d088db/datasets/dc463d70b5a048fab033a85e590572d8_day_classification"
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 10,
+            "y": 0,
+            "width": 2,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "e3863de4",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3c631162",
+                  "fields": [
+                    {
+                      "name": "product_category",
+                      "expression": "`product_category`"
+                    },
+                    {
+                      "name": "sum(total_amount)",
+                      "expression": "SUM(`total_amount`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Revenue by Product Category",
+                "showTitle": true
+              },
+              "mark": {
+                "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "product_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(total_amount)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 8,
+            "y": 3,
+            "width": 4,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "b675b676",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\">Business Insights</span>\n",
+                "<p>&nbsp;</p>\n",
+                "\n",
+                "#### Best performing product\n",
+                "\n",
+                "Sustainably Grown Organic Lg leads with $21,152 across 4,453 units sold.\n",
+                "\n",
+                "#### Worst performing product\n",
+                "\n",
+                "Dark chocolate trails the range at just $755 — review pricing, placement or delisting.\n",
+                "\n",
+                "#### Highest revenue month\n",
+                "\n",
+                "Jun delivered $166,486, the strongest trading month in the current view.\n",
+                "\n",
+                "#### Lowest revenue month\n",
+                "\n",
+                "Feb was softest at $76,145 — a natural window for promotional activity.\n",
+                "\n",
+                "#### Peak shopping time\n",
+                "\n",
+                "09:00-11:59 is the busiest window with $220,162 and 46,075 orders.\n",
+                "\n",
+                "#### Highest performing store\n",
+                "\n",
+                "Hell's Kitchen tops the network at $236,511, ahead of Astoria by $4,267.\n",
+                "\n",
+                "#### Weekend vs Weekday\n",
+                "\n",
+                "Weekdays generate $503,588 vs $195,225 at weekends — weekday commuters drive the business.\n",
+                "\n",
+                "#### Day-part comparison\n",
+                "\n",
+                "Morning $220,162 · Breakfast Rush $168,127 · Afternoon $122,990"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 33,
+            "width": 6,
+            "height": 10
+          }
+        },
+        {
+          "widget": {
+            "name": "e0ef417e",
+            "multilineTextboxSpec": {
+              "lines": [
+                "# <span style=\"text-align:center;display:block\">Recommendations</span>\n",
+                "<p>&nbsp;</p>\n",
+                "\n",
+                "#### Increase stock\n",
+                "\n",
+                "Raise inventory cover for Sustainably Grown Organic Lg and Dark chocolate Lg — stockouts here cost the most revenue.\n",
+                "\n",
+                "#### Promote underperformers\n",
+                "\n",
+                "Bundle Dark chocolate with a top seller or feature it at the counter to lift slow-moving lines.\n",
+                "\n",
+                "#### Discount slow periods\n",
+                "\n",
+                "Run a timed offer during 18:00-20:59, the weakest trading window at $65,669.\n",
+                "\n",
+                "#### Staff for peak hours\n",
+                "\n",
+                "Add cover around 09:00-11:59 to protect service speed when 46,075 orders land.\n",
+                "\n",
+                "#### Focus marketing spend\n",
+                "\n",
+                "Coffee contributes 38.6% of revenue — anchor campaigns here.\n",
+                "\n",
+                "#### Loyalty in quiet periods\n",
+                "\n",
+                "Offer double loyalty points on Packaged Chocolate outside peak hours to smooth demand across the day."
+              ]
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 33,
+            "width": 6,
+            "height": 10
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    },
+    {
+      "name": "96c51380",
+      "displayName": "Global Filters",
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#E2E2E2",
+        "dark": "#111416"
+      },
+      "widgetBackgroundColor": {
+        "light": "#EAF1F6",
+        "dark": "#0D1013"
+      },
+      "widgetBorderColor": {
+        "light": "#DEE5EB",
+        "dark": "#282E34"
+      },
+      "fontColor": {
+        "light": "#543F10",
+        "dark": "#F1D8A2"
+      },
+      "selectionColor": {
+        "light": "#3A95B7",
+        "dark": "#64A5BC"
+      },
+      "visualizationColors": [
+        "#40777C",
+        "#D07D70",
+        "#93B2BD",
+        "#E0C085",
+        "#CADBD4",
+        "#EFE7DE",
+        "#4B2C17"
+      ],
+      "widgetHeaderAlignment": "LEFT",
+      "fontFamily": "Montserrat",
+      "widgetPadding": 16,
+      "widgetMargin": 8,
+      "widgetCornerRadius": 16,
+      "widgetShadow": 0,
+      "continuousGradient": {
+        "lightMode": {
+          "fromCategoricalIndex": 0
+        },
+        "darkMode": {
+          "fromCategoricalIndex": 0
+        }
+      },
+      "fontSettings": {
+        "base": {
+          "fontFamily": "Montserrat",
+          "fontColor": {
+            "light": "#543F10",
+            "dark": "#F1D8A2"
+          },
+          "fontSize": 12,
+          "fontWeight": 400
+        },
+        "widgetTitle": {
+          "fontSize": 14,
+          "fontWeight": 500
+        },
+        "widgetDescription": {
+          "fontSize": 12,
+          "fontWeight": 400
+        },
+        "fieldTitle": {
+          "textCase": "TEXT_CASE_UPPERCASE",
+          "fontColor": {
+            "light": "#655228",
+            "dark": "#D9C292"
+          },
+          "fontSize": 11,
+          "fontWeight": 400
+        },
+        "fieldValue": {
+          "fontColor": {
+            "light": "#655228",
+            "dark": "#D9C292"
+          },
+          "fontSize": 11,
+          "fontWeight": 400
+        }
+      },
+      "gridLineColor": {
+        "light": "#CFD1CD",
+        "dark": "#36342C"
+      },
+      "axisLineColor": {
+        "light": "#BDB7AA",
+        "dark": "#4D483B"
+      }
+    },
+    "applyModeEnabled": false
+  }
+}
