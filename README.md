@@ -1,97 +1,184 @@
-# ☕ Bright Coffee Shop — Sales Analysis
+# ☕ Bright Coffee Shop — Sales Analytics
 
 <p align="center">
 
-### Turning Coffee Shop Transactions into Business Insights
+### Turning Transaction Data into Business Insights
 
-An end-to-end data analytics project exploring revenue, product performance, customer activity and sales trends.
+**An end-to-end data analytics project covering data preparation, SQL analysis, business intelligence, visualisation and executive reporting.**
 
 </p>
 
 ---
 
-## 🚀 Explore the Project
+## ☕ Executive Dashboard
 
-### ☕ Coffee CEO View
+### Coffee CEO View
 
-**Interactive executive dashboard**
+Explore the final interactive executive dashboard:
 
-👉 https://coffee-ceo-view.lovable.app
-
-A simplified business-facing dashboard designed to turn the analysis into an easy-to-understand view for decision-makers.
+👉 **https://coffee-ceo-view.lovable.app**
 
 ---
 
-## 📊 Project Snapshot
+## 📊 Project Overview
 
-| Area | What I Did |
+Bright Coffee Shop's transaction data was analysed to understand **revenue, product performance, customer purchasing patterns, store performance and trading periods**.
+
+The project transforms raw transaction data into actionable business insights through:
+
+**Data → Analysis → Visualisation → Insight → Recommendation**
+
+### Key business questions
+
+- 💰 How much revenue is being generated?
+- ☕ Which products generate the most revenue?
+- 🛒 Which products sell the most?
+- 🏪 Which stores perform best?
+- 📈 How does revenue change over time?
+- 🕒 Which part of the day performs best?
+- 📅 How do weekdays compare with weekends?
+- 🔥 Which day and time combinations perform strongest?
+- 🎯 Where are there opportunities to improve performance?
+
+---
+
+# 📈 Key Performance Indicators
+
+| KPI | Result |
+|---|---:|
+| 💰 Total Revenue | **R698,812.33** |
+| 🧾 Total Transactions | **149,116** |
+| 🛒 Quantity Sold | **214,470** |
+| 💳 Average Order Value | **R4.69** |
+
+---
+
+# 🏆 Product Performance
+
+### Top Product by Revenue
+
+**Sustainably Grown Organic Lg**
+
+| Metric | Result |
+|---|---:|
+| Quantity Sold | 4,453 |
+| Revenue | R21,151.75 |
+| Average Price | R4.75 |
+
+The project also analysed the **Top 10 / Top 15 products** using revenue and quantity sold to identify high-performing and underperforming products.
+
+---
+
+# 🕒 Time-of-Day Performance
+
+Transactions were grouped into five business-friendly periods:
+
+| Time | Period |
 |---|---|
-| 🧹 Data Preparation | Cleaned and transformed transactional data |
-| 🧠 SQL | Performed calculations, grouping and analysis |
-| 🗄️ Databricks | Processed the dataset using SQL |
-| 📊 Data Studio | Built interactive sales visualisations |
-| 📈 Power BI | Created business-focused dashboards |
-| 📗 Excel | Performed PivotTable analysis |
-| 📅 Canva | Designed the project Gantt chart |
-| 🗺️ Miro | Planned the data flow and analytical approach |
-| 💡 Business Analysis | Converted findings into recommendations |
-| 🎨 Data Storytelling | Presented complex information visually |
+| 06:00–08:59 | 🌅 Breakfast Rush |
+| 09:00–11:59 | ☀️ Morning |
+| 12:00–14:59 | 🍽️ Lunch |
+| 15:00–17:59 | 🌇 Afternoon |
+| 18:00–20:59 | 🌙 Evening |
+
+### Peak Trading Period
+
+**09:00–11:59 — Morning**
+
+Approximately:
+
+**R220,162 revenue**
+
+and
+
+**46,075 orders**
+
+This provides a basis for evaluating staffing, inventory and promotional strategies around peak demand.
 
 ---
 
-# 🎯 The Business Question
+# 📅 Revenue Trend
 
-Bright Coffee Shop has a new CEO whose objective is to **grow revenue and improve product performance**.
+Monthly revenue was analysed from **January to June**.
 
-The analysis focuses on answering:
+The analysis identified:
 
-> **Which products generate the most revenue, when does the business perform best, and what opportunities exist to improve sales?**
+🥇 **June — R166,486**
 
----
+as the strongest month, while:
 
-# 🔍 Questions I Wanted to Answer
+📉 **February — R76,145**
 
-### 💰 Revenue
-**How much revenue is the business generating?**
+was the weakest.
 
-### ☕ Products
-**Which products are driving revenue and sales volume?**
-
-### 🕒 Time
-**Which part of the day performs best?**
-
-### 📅 Trends
-**How does revenue change from month to month?**
-
-### 🔥 Opportunities
-**Where are the strongest and weakest trading periods?**
+Monthly analysis was also structured using a numerical month field to ensure the visualisations followed the correct chronological order.
 
 ---
 
-# 🧭 Analytics Workflow
+# 🏪 Store Performance
 
-```text
-              RAW TRANSACTION DATA
-                       │
-                       ▼
-                DATA PREPARATION
-                       │
-                       ▼
-                DATABRICKS + SQL
-                       │
-                       ▼
-             CLEAN ANALYTICAL DATA
-                       │
-            ┌──────────┼──────────┐
-            ▼          ▼          ▼
-         EXCEL     DATA STUDIO  POWER BI
-            │          │          │
-            └──────────┼──────────┘
-                       ▼
-                BUSINESS ANALYSIS
-                       │
-                       ▼
-               COFFEE CEO VIEW
-                       │
-                       ▼
-              INSIGHTS & ACTIONS
+Store locations were compared using revenue and transaction performance.
+
+### Highest-performing location
+
+**Hell's Kitchen — R236,511**
+
+Store-level analysis provides an opportunity to investigate differences in customer demand, product performance and operational performance between locations.
+
+---
+
+# 📆 Weekday vs Weekend
+
+| Trading Period | Revenue |
+|---|---:|
+| 🗓️ Weekday | **R503,588** |
+| 🌴 Weekend | **R195,225** |
+
+The analysis highlights a significant difference between weekday and weekend revenue and provides an opportunity to investigate customer behaviour across the two periods.
+
+---
+
+# 🔥 Revenue Heatmap
+
+A **Day × Period revenue heatmap** was developed to identify stronger and weaker trading windows.
+
+### Dimensions
+
+**Days**
+
+Monday → Sunday
+
+**Periods**
+
+Breakfast Rush → Morning → Lunch → Afternoon → Evening
+
+This provides a quick way to identify when revenue is strongest and where operational or promotional opportunities may exist.
+
+---
+
+# 🧠 Data & SQL
+
+The analytical dataset was prepared using **Databricks SQL**.
+
+### Transformations included
+
+- Data type standardisation
+- Revenue calculations
+- Date transformations
+- Month and year extraction
+- Weekday/weekend classification
+- Time-of-day classification
+- Product categorisation
+- Store cleaning
+- Missing-value handling
+- Revenue aggregation
+- Product performance analysis
+- Store performance analysis
+
+### Revenue calculation
+
+```sql
+CAST(
+    transaction_qty * unit_price
+    AS DECIMAL(10,2)
+) AS total_amount
